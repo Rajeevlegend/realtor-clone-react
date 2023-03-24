@@ -80,6 +80,20 @@ const Profile = () => {
     }
     fetchUserListings();
   }, [auth.currentUser.uid]);
+  async function onDelete (listingID) {
+    if (window.confirm("Are you sure you want to delete?")) {
+      await deleteDoc(doc(db, "listings", listingID));
+      const updatedListings = listings.filter(
+        (listing) => listing.id !== listingID
+      );
+      setListings(updatedListings);
+      toast.success("Successfully deleted the listing");
+    }
+
+  }
+  function onEdit (listingID) {
+    navigate(`/edit-listing/${listingID}`);
+  }
 
   return (
     <>
@@ -155,6 +169,8 @@ const Profile = () => {
                   key={listing.id}
                   id={listing.id}
                   listing={listing.data}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
                 />
               ))}
             </ul>
